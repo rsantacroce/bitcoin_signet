@@ -1,7 +1,10 @@
 #!/bin/bash
 NBITS=${NBITS:-"1e0377ae"} #minimum difficulty in signet
+# replace while with 1000 iterations
 
-while true; do
+# replace while with for 
+for i in {1..1000}; do
+# while true; do
     ADDR=${MINETO:-$(bitcoin-cli getnewaddress)}
     if [[ -f "${BITCOIN_DIR}/BLOCKPRODUCTIONDELAY.txt" ]]; then
         BLOCKPRODUCTIONDELAY_OVERRIDE=$(cat ~/.bitcoin/BLOCKPRODUCTIONDELAY.txt)

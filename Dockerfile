@@ -1,21 +1,22 @@
 FROM debian:buster-slim as builder
 
-ARG BITCOIN_VERSION=${BITCOIN_VERSION:-25.1}
+ARG BITCOIN_VERSION=${BITCOIN_VERSION:-sv2-tp-0.1.2}
 
 ARG TARGETPLATFORM  
 
 RUN  apt-get update && \
      apt-get install -qq --no-install-recommends ca-certificates dirmngr gosu wget libc6 procps python3
 WORKDIR /tmp
-# install bitcoin binaries
+# install bitcoin binaries from local repository
+# https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}-${TRIPLET}.tar.gz
  RUN case $TARGETPLATFORM in \
    linux/amd64) \
      echo "amd64" && export TRIPLET="x86_64-linux-gnu";; \
    linux/arm64) \
      echo "arm64" && export TRIPLET="aarch64-linux-gnu";; \
-   esac && \
-   BITCOIN_URL="https://bitcoincore.org/bin/bitcoin-core-${BITCOIN_VERSION}/bitcoin-${BITCOIN_VERSION}-${TRIPLET}.tar.gz" && \
-   BITCOIN_FILE="bitcoin-${BITCOIN_VERSION}-${TRIPLET}.tar.gz" && \
+   esac && \  
+   BITCOIN_URL="https://github.com/Sjors/bitcoin/releases/download/sv2-tp-0.1.2/bitcoin-sv2-tp-0.1.2-x86_64-linux-gnu.tar.gz" && \
+   BITCOIN_FILE="bitcoin-sv2-tp-0.1.2-x86_64-linux-gnu.tar.gz" && \
    wget -qO "${BITCOIN_FILE}" "${BITCOIN_URL}" && \
    mkdir -p bin && \
    tar -xzvf "${BITCOIN_FILE}" -C /tmp/bin --strip-components=2 "bitcoin-${BITCOIN_VERSION}/bin/bitcoin-cli" "bitcoin-${BITCOIN_VERSION}/bin/bitcoind" "bitcoin-${BITCOIN_VERSION}/bin/bitcoin-wallet" "bitcoin-${BITCOIN_VERSION}/bin/bitcoin-util" 
@@ -55,9 +56,9 @@ ENV MINETO=${MINETO:-""}
 ENV EXTERNAL_IP=${EXTERNAL_IP:-""} 
 
 VOLUME $BITCOIN_DIR
-EXPOSE 28332 28333 28334 38332 38333 38334
+EXPOSE 28332 28333 28334 38332 38333 38334 8442
 RUN  apt-get update && \
-     apt-get install -qq --no-install-recommends procps python3 python3-pip jq && \
+     apt-get install -qq --no-install-recommends procps python3 python3-pip jq bc && \
      apt-get clean
 COPY --from=builder "/tmp/bin" /usr/local/bin 
 COPY docker-entrypoint.sh /usr/local/bin/entrypoint.sh
