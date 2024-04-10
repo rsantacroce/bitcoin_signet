@@ -1,6 +1,6 @@
 DATADIR=${DATADIR:-"regtest-temp"}
 BITCOINCLI=${BITCOINCLI:-"bitcoin-cli -regtest -datadir=$DATADIR "}
-BITCOIND=${BITCOIND:-"bitcoind -datadir=$DATADIR -regtest -daemon "}
+BITCOIND=${BITCOIND:-"bitcoind -datadir=$DATADIR -regtest -daemon -deprecatedrpc=create_bdb -sv2 -sv2port=8442 -sv2interval=20 -sv2feedelta=1000 -debug=sv2 -loglevel=sv2:trace -sv2bind=0.0.0.0"}
 
 write_files() {
     # echo "ADDR=" $ADDR

@@ -1,6 +1,6 @@
 PRIVKEY=${PRIVKEY:-$(cat ~/.bitcoin/PRIVKEY.txt)}
 DATADIR=${DATADIR:-~/.bitcoin/}
-bitcoind -datadir=$DATADIR --daemonwait -persistmempool
+bitcoind -datadir=$DATADIR --daemonwait -persistmempool -deprecatedrpc=create_bdb -sv2 -sv2port=8442 -sv2interval=20 -sv2feedelta=1000 -debug=sv2 -loglevel=sv2:trace -sv2bind=0.0.0.0
 bitcoin-cli -datadir=$DATADIR -named createwallet wallet_name="custom_signet" load_on_startup=true descriptors=false
 
 #only used in case of mining node
