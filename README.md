@@ -17,6 +17,8 @@
 
 ## 🔍 Overview
 
+This project is a fork of the original (https://github.com/nbd-wtf/bitcoin_signet) with some customizations in order to run stratum v2 with bitcoin signet.
+
 Bitcoin Signet provides a sandboxed environment for Bitcoin, allowing developers and testers to simulate the Bitcoin network without the risks associated with the main or test networks. This Docker image facilitates the deployment and configuration of a Signet node, offering a range of customizable options through environment variables.
 
 ## 🛠 Environment Variables
