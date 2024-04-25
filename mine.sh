@@ -4,7 +4,7 @@ NBITS=${NBITS:-"1e0377ae"} #minimum difficulty in signet
 
 # replace while with for 
 ADDR=${MINETO:-$(bitcoin-cli getnewaddress)}
-for i in {1..100}; do
+for i in {1..1000}; do
 # while true; do
     # ADDR=${MINETO:-$(bitcoin-cli getnewaddress)}
     if [[ -f "${BITCOIN_DIR}/BLOCKPRODUCTIONDELAY.txt" ]]; then
@@ -29,7 +29,7 @@ for i in {1..100}; do
 
     echo "Mine To:" $ADDR
     miner --cli="bitcoin-cli" generate --grind-cmd="bitcoin-util grind" --address=$ADDR --nbits=$NBITS --set-block-time=$(date +%s)    
-    if [[ $i -gt 20 ]]; then
-        sleep 60
+    if [[ $i -gt 17 ]]; then
+        sleep 300
     fi
 done
