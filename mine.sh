@@ -3,9 +3,10 @@ NBITS=${NBITS:-"1e0377ae"} #minimum difficulty in signet
 # replace while with 1000 iterations
 
 # replace while with for 
-for i in {1..1000}; do
+ADDR=${MINETO:-$(bitcoin-cli getnewaddress)}
+for i in {1..100}; do
 # while true; do
-    ADDR=${MINETO:-$(bitcoin-cli getnewaddress)}
+    # ADDR=${MINETO:-$(bitcoin-cli getnewaddress)}
     if [[ -f "${BITCOIN_DIR}/BLOCKPRODUCTIONDELAY.txt" ]]; then
         BLOCKPRODUCTIONDELAY_OVERRIDE=$(cat ~/.bitcoin/BLOCKPRODUCTIONDELAY.txt)
         echo "Delay OVERRIDE before next block" $BLOCKPRODUCTIONDELAY_OVERRIDE "seconds."
@@ -17,6 +18,18 @@ for i in {1..1000}; do
             sleep $BLOCKPRODUCTIONDELAY
         fi
     fi
+
+    latest_block_hash=$(bitcoin-cli -signet getbestblockhash)
+
+    # Get the full block data for the latest block
+    block_data=$(bitcoin-cli -signet getblock "$latest_block_hash")
+
+    # Extract the nBits value using jq
+    NBITS=$(echo "$block_data" | jq -r '.bits')
+
     echo "Mine To:" $ADDR
-    miner --cli="bitcoin-cli" generate --grind-cmd="bitcoin-util grind" --address=$ADDR --nbits=$NBITS --set-block-time=$(date +%s)
+    miner --cli="bitcoin-cli" generate --grind-cmd="bitcoin-util grind" --address=$ADDR --nbits=$NBITS --set-block-time=$(date +%s)    
+    if [[ $i -gt 20 ]]; then
+        sleep 60
+    fi
 done
